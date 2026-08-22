@@ -1,5 +1,10 @@
 # Flutter Application: Dynamic Design & Widget Showcase
 
+![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
+![Material Design](https://img.shields.io/badge/Material%20Design-757575?style=for-the-badge&logo=materialdesign&logoColor=white)
+![Dio](https://img.shields.io/badge/Dio-HTTP%20Client-blue?style=for-the-badge&logo=dart&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
+
 A comprehensive, production-ready Flutter project demonstrating advanced UI development, custom Material Design implementation, dynamic color schemes, and a robust widget architecture.
 
 ---
