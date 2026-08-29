@@ -1,17 +1,108 @@
-# agenda_daytoday_task_systems
+<div dir="rtl" style="text-align: left;">
 
-A new Flutter project.
+# تطبيق فلاتر: التصميم الديناميكي وعرض العناصر
 
-## Getting Started
+![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
+![Material Design](https://img.shields.io/badge/Material%20Design-757575?style=for-the-badge&logo=materialdesign&logoColor=white)
+![Dio](https://img.shields.io/badge/Dio-HTTP%20Client-blue?style=for-the-badge&logo=dart&logoColor=white)
+![Dart SDK](https://img.shields.io/badge/Dart-SDK-0175C2?style=for-the-badge&logo=dart&logoColor=0175C2&color=121212)
 
-This project is a starting point for a Flutter application.
+مشروع فلاتر شامل وجاهز للإنتاج يوضح تطوير واجهات مستخدم متقدمة، وتطبيق تصميم ماتيريال المخصص، وأنظمة الألوان الديناميكية، وهندسة عناصر قوية.
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## نظرة عامة على المشروع
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+يعمل هذا المشروع كمرجع هندسي وواجهة عرض لتطوير فلاتر الحديث. وهو يطبق تصميم ماتيريال المتكيف (Material 3)، وأنماط إدارة الحالة القوية، والرسوم المتحركة المخصصة، ومكتبة غنية من العناصر المخصصة القابلة لإعادة الاستخدام. مصمم لأداء عالي، وسهولة الوصول، وتنفيذ سلس عبر منصات متعددة (iOS, Android, Web, Desktop).
+
+---
+
+## لوحة الألوان والسمات (Material 3)
+
+يستخدم التطبيق لوحة ألوان متطورة ومخففة الاحترافية مبنية على إرشادات Material 3. وهي تدعم سمات الضوء والظلام الديناميكية مع تدرجات سطح سلسة.
+
+| الدور | رمز اللون السداسي للوضع الفاتح | رمز اللون السداسي للوضع الداكن | الوصف |
+| :--- | :--- | :--- | :--- |
+| **الأساسي** | `#1B365D` (أزرق داكن) | `#4A7BB0` (أزرق فولاذي باهت) | هوية العلامة التجارية، الأزرار الأساسية، علامات التبويب النشطة |
+| **الثانوي** | `#D99B26` (كهرماني/ذهبي دافئ) | `#E6B34D` (كهرماني فاتح) | تمييز العناصر، أزرار الإجراءات العائمة، عبارات الحث على اتخاذ إجراء |
+| **الثالثي** | `#2E6B5E` (أزرق مخضر باهت) | `#4DA694` (أزرق مخضر فاتح) | حالات النجاح، رقائق المعلومات، الشارات |
+| **الخلفية** | `#F8F9FA` (أبيض ناصع) | `#121619` (فحمي داكن) | الهيكل الرئيسي وخلفية اللوحة |
+| **السطح** | `#FFFFFF` (أبيض نقي) | `#1A2128` (بطاقة داكنة مرتفعة) | البطاقات، مربعات الحوار، الصفحات السفلية، أشرطة التنقل |
+| **خطأ** | `#BA1A1A` (أحمر مرجاني) | `#FFB4AB` (مرجاني فاتح) | أخطاء التحقق من صحة النموذج، إجراءات تخريبية |
+
+### مقياس الطباعة (رموز الطباعة في Material 3)
+* **عرض كبير / متوسط ​​/ صغير:** تطبيق عائلة خطوط مخصصة (`Inter` / `Roboto`) مع ارتفاعات أسطر متناسبة.
+* **نص رئيسي كبير (`16sp`):** المحتوى الوصفي الرئيسي والفقرات.
+* **نص رئيسي متوسط ​​(`14sp`):** العناوين الفرعية، ووصف مربعات القوائم الفرعية.
+* **تسمية كبيرة (`14sp` وزن متوسط):** تسميات الأزرار، والمحفزات التفاعلية، وتسميات حقول الإدخال.
+
+---
+
+## العناصر الأساسية والهندسة المعمارية
+
+تم تصميم التطبيق حول شجرة عناصر واجهة مستخدم معيارية، تستفيد من الفصل بين الحالة عديمة الحالة والحالة إلى جانب وحدات التحكم التفاعلية الحديثة.
+
+### 1. عناصر واجهة مستخدم مخصصة وقابلة لإعادة الاستخدام (`lib/widgets/`)
+* **`AppCard`**: حاوية مخصصة بظل بارز، وزوايا دائرية (`BorderRadius.circular(16)`)، وحشو مخصص يدعم ألوان الأسطح الفاتحة/الداكنة الديناميكية.
+* **`PrimaryButton`**: غلاف زر مرتفع/مملوء من Material 3 مع مؤشر تحميل مدمج، ومخصص تأثير تموج، وعلامات دلالية لسهولة الوصول.
+* **`StatusBadge`**: عنصر واجهة مستخدم مضمن على شكل شريحة مع إمكانية تخصيص شفافية الخلفية، ولون النص، وبادئة الأيقونة لعرض حالات المعاملات أو سير العمل.
+* **`EmptyStateView`**: عنصر واجهة مستخدم قابل لإعادة الاستخدام لعرض صورة SVG/أيقونة، ورسالة عنوان، ووصف، وزر إجراء عندما تكون القوائم فارغة.
+### ٢. هيكل الواجهة والتنقل (`lib/screens/`)
+* **`الشاشة الرئيسية`**: عرض لوحة التحكم بتصميم شبكي متداخل (`GridView.builder`)، وشريط تطبيقات مخصص مع تحية ديناميكية، ومربعات إجراءات سريعة.
+* **`شاشة عرض الأدوات`**: بيئة تفاعلية تعرض جميع مكونات واجهة المستخدم الأساسية، وحقول إدخال النماذج، ومفاتيح التبديل، وأشرطة التمرير، والقوائم السفلية.
+* **`شاشة الإعدادات`**: شاشة إدارة التفضيلات باستخدام مربعات قوائم مجمعة لتغيير المظهر (`فاتح`/`داكن`/`نظام`)، ومفاتيح تبديل الإشعارات، وإعدادات الحساب.
+
+---
+
+## Dio الشبكات باستخدام (`lib/data/network/`)
+
+```dart
+// lib/data/network/dio_client.dart
+class DioClient {
+  late final Dio _dio;
+
+  DioClient() {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: '[https://api.example.com/v1](https://api.example.com/v1)',
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {'Content-Type': 'application/json'},
+      ),
+    )..interceptors.addAll([
+        AuthInterceptor(),
+        LoggingInterceptor(),
+      ]);
+  }
+
+  Dio get instance => _dio;
+}
+```
+
+---
+
+## هيكل المشروع
+
+```text
+lib/
+│
+├── core/
+│   ├── constants/       # الثوابت على مستوى التطبيق، النصوص الحرفية، الأبعاد
+│   ├── theme/           # سياق التطبيق، لوحات الألوان (فاتحة وداكنة)، الخطوط
+│   └── utils/           # طرق الامتداد، المنسقون، أدوات الشاشة
+│
+├── data/
+│   ├── models/          # نماذج بيانات قابلة للتسلسل بلغة دارت (جسون تسلسل)
+│   └── repositories/    # عملاء واليبرمجة، التخزين المحلي، مصادر البيانات الوهمية
+│
+├── logic/
+│   └── bloc/ or providers/ # وحدات تحكم إدارة الحالة (Riverpod / BLoC / Provider)
+│
+├── presentation/
+│   ├── screens/         # شاشات مستوى الميزة (الرئيسية، التفاصيل، الإعدادات)
+│   └── widgets/         # مكونات واجهة المستخدم الذرية القابلة لإعادة الاستخدام (أزرار، بطاقات، شارات)
+│
+└── main.dart            # نقطة دخول التطبيق وتثبيت السمات
+```
+
+</div>
