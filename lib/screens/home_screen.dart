@@ -72,9 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
         time: '${_selectedTime.hour}:${_selectedTime.minute.toString().padLeft(2, '0')}',
       );
 
-      // مثال لطلب إرسال بيانات للخادم
-      // await _dioClient.instance.post('/todos', data: newTask.toJson());
-
       setState(() {
         _tasks.add(newTask);
         _listKey.currentState?.insertItem(_tasks.length - 1, duration: const Duration(milliseconds: 300));
@@ -192,29 +189,75 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // صندوق مزخرف لمنطقة الأولوية بتدرج لوني
-                  DecoratedBox(
-                    decoration: const BoxDecoration(
-                      gradient: RadialGradient(
-                        center: Alignment(-0.5, -0.6),
-                        radius: 0.85,
-                        colors: <Color>[Color(0xFFEEEEEE), Color(0xFF111133)],
-                        stops: <double>[0.1, 1.0],
+                  // صندوق مزخرف بنمط ملمس (Texture Pattern) وخلفية ملونة تماشياً مع Material 3
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16.0),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Theme.of(context).colorScheme.primary,
+                            Theme.of(context).colorScheme.primaryContainer,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
                       ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Stack(
                         children: [
-                          const Text('منطقة الأولوية', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                          Transform(
-                            alignment: Alignment.topRight,
-                            transform: Matrix4.skewY(0.1)..rotateZ(-math.pi / 24.0),
-                            child: Container(
-                              padding: const EdgeInsets.all(6.0),
-                              color: const Color(0xFFE8581C),
-                              child: const Text('مميز', style: TextStyle(color: Colors.white, fontSize: 12)),
+                          Positioned.fill(
+                            child: CustomPaint(
+                              painter: TexturePatternPainter(
+                                color: Colors.white.withOpacity(0.08),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'منطقة الأولوية النشطة',
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.onPrimary,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'تم تفعيل النمط الملون مع الملمس',
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Transform(
+                                  alignment: Alignment.topRight,
+                                  transform: Matrix4.skewY(0.1)..rotateZ(-math.pi / 24.0),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.secondary,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      'مميز',
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.onSecondary,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -271,4 +314,31 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+/// رسم ملمس هندسي خفيف لإعطاء تأثير النسيج (Texture) للخلفية الملونة
+class TexturePatternPainter extends CustomPainter {
+  final Color color;
+
+  TexturePatternPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.5;
+
+    const double spacing = 16.0;
+    
+    for (double i = -size.height; i < size.width + size.height; i += spacing) {
+      canvas.drawLine(
+        Offset(i, 0),
+        Offset(i + size.height, size.height),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
