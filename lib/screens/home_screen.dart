@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import '../models/task_model.dart';
 import '../data/network/dio_client.dart';
 
+/// الشاشة الرئيسية للتطبيق المتغيرة
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -11,36 +12,40 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // مفتاح عالمي لإدارة حالة القائمة المتحركة
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+  
+  // مثيل عميل الشبكة لإدارة طلبات الخادم
   final DioClient _dioClient = DioClient();
   
   List<Task> _tasks = [];
   bool _isLoading = true;
   bool _isNotificationEnabled = true;
   TimeOfDay _selectedTime = const TimeOfDay(hour: 8, minute: 30);
-  String _selectedCategory = 'Daily';
+  String _selectedCategory = 'يومي';
 
   @override
   void initState() {
     super.initState();
+    // جلب المهام من الخادم فور بدء تشغيل الشاشة
     _fetchTasksFromApi();
   }
 
-  // Fetch tasks from API using Dio
+  // دالة لجلب المهام من الخادم باستخدام عميل الشبكة
   Future<void> _fetchTasksFromApi() async {
     try {
       setState(() => _isLoading = true);
       
-      // Example network request (using jsonplaceholder for demonstration)
+      // تنفيذ طلب شبكة لجلب بيانات تجريبية
       final response = await _dioClient.instance.get('/todos?_limit=4');
       
       final List<dynamic> data = response.data;
       final fetchedTasks = data.map((json) => Task(
         id: json['id'].toString(),
         title: json['title'],
-        category: 'Daily',
+        category: 'يومي',
         isCompleted: json['completed'],
-        time: '09:00 AM',
+        time: '09:00 ص',
       )).toList();
 
       setState(() {
@@ -51,23 +56,23 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() => _isLoading = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load tasks: $e')),
+          SnackBar(content: Text('فشل تحميل المهام: $e')),
         );
       }
     }
   }
 
-  // Add Task via API POST request (simulated)
+  // دالة لإضافة مهمة جديدة ومزامنتها عبر طلب إرسال للخادم
   Future<void> _addTask() async {
     try {
       final newTask = Task(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: 'New Household Task #${_tasks.length + 1}',
+        title: 'مهمة منزلية جديدة #${_tasks.length + 1}',
         category: _selectedCategory,
         time: '${_selectedTime.hour}:${_selectedTime.minute.toString().padLeft(2, '0')}',
       );
 
-      // POST request example
+      // مثال لطلب إرسال بيانات للخادم
       // await _dioClient.instance.post('/todos', data: newTask.toJson());
 
       setState(() {
@@ -77,17 +82,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Task added and synced via Dio!')),
+          const SnackBar(content: Text('تمت إضافة المهمة ومزامنتها بنجاح!')),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error posting task: $e')),
+        SnackBar(content: Text('خطأ أثناء إرسال المهمة: $e')),
       );
     }
   }
 
-  // Remove Task
+  // دالة لحذف مهمة من القائمة مع تأثير الحركة
   void _removeTask(int index) {
     final removedItem = _tasks.removeAt(index);
     _listKey.currentState?.removeItem(
@@ -100,6 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // دالة لفتح واجهة اختيار الوقت
   Future<void> _pickTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -115,8 +121,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // شريط التطبيق العلوي
       appBar: AppBar(
-        title: const Text('DayToday Household Agenda'),
+        title: const Text('أجندة المهام اليومية'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -128,22 +135,24 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      // القائمة الجانبية المخفية
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(color: Color(0xFF1B365D)),
-              child: Text('Household Menu', style: TextStyle(color: Colors.white, fontSize: 20)),
+              child: Text('قائمة المنزل', style: TextStyle(color: Colors.white, fontSize: 20)),
             ),
             ListTile(
               leading: const Icon(Icons.home),
-              title: const Text('Dashboard'),
+              title: const Text('لوحة التحكم'),
               onTap: () => Navigator.pop(context),
             ),
           ],
         ),
       ),
+      // محتوى الشاشة الرئيسي
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
@@ -151,11 +160,12 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // أزرار مقسمة لاختيار فئة المهام
                   Center(
                     child: SegmentedButton<String>(
                       segments: const [
-                        ButtonSegment(value: 'Daily', label: Text('Daily'), icon: Icon(Icons.today)),
-                        ButtonSegment(value: 'Weekly', label: Text('Weekly'), icon: Icon(Icons.date_range)),
+                        ButtonSegment(value: 'يومي', label: Text('يومي'), icon: Icon(Icons.today)),
+                        ButtonSegment(value: 'أسبوعي', label: Text('أسبوعي'), icon: Icon(Icons.date_range)),
                       ],
                       selected: {_selectedCategory},
                       onSelectionChanged: (Set<String> newSelection) {
@@ -169,10 +179,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   const LinearProgressIndicator(value: 0.65),
                   const Divider(height: 24, thickness: 2),
                   
+                  // صف تفعيل التذكيرات
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Enable Task Reminders', style: TextStyle(fontWeight: FontWeight.w500)),
+                      const Text('تفعيل تذكيرات المهام', style: TextStyle(fontWeight: FontWeight.w500)),
                       Switch(
                         value: _isNotificationEnabled,
                         onChanged: (value) => setState(() => _isNotificationEnabled = value),
@@ -181,6 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 10),
 
+                  // صندوق مزخرف لمنطقة الأولوية بتدرج لوني
                   DecoratedBox(
                     decoration: const BoxDecoration(
                       gradient: RadialGradient(
@@ -195,14 +207,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Priority Zone', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          const Text('منطقة الأولوية', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                           Transform(
                             alignment: Alignment.topRight,
                             transform: Matrix4.skewY(0.1)..rotateZ(-math.pi / 24.0),
                             child: Container(
                               padding: const EdgeInsets.all(6.0),
                               color: const Color(0xFFE8581C),
-                              child: const Text('fav', style: TextStyle(color: Colors.white, fontSize: 12)),
+                              child: const Text('مميز', style: TextStyle(color: Colors.white, fontSize: 12)),
                             ),
                           ),
                         ],
@@ -211,9 +223,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  const Text('Task List (Synced via Dio):', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text('قائمة المهام (المزامنة عبر الشبكة):', style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),
                   
+                  // قائمة المهام المتحركة
                   Expanded(
                     child: AnimatedList(
                       key: _listKey,
@@ -229,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: const Color(0xFF1B365D),
                               ),
                               title: Text(task.title),
-                              subtitle: Text('Category: ${task.category} | Time: ${task.time}'),
+                              subtitle: Text('الفئة: ${task.category} | الوقت: ${task.time}'),
                               trailing: IconButton(
                                 icon: const Icon(Icons.delete, color: Colors.red),
                                 onPressed: () => _removeTask(index),
@@ -243,15 +256,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
+      // شريط التنقل السفلي
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Tasks'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'المهام'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'الإعدادات'),
         ],
       ),
-      floatingActionButton: ExtendedFloatingActionButton(
+      // زر الإجراء العائم الممتد لإضافة مهمة
+      floatingActionButton: FloatingActionButton.extended(
         icon: const Icon(Icons.add),
-        label: const Text('Add Task'),
+        label: const Text('إضافة مهمة'),
         onPressed: _addTask,
       ),
     );
