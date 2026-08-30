@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:dio/dio.dart';
 import 'dart:math' as math;
 
@@ -16,7 +18,21 @@ class HouseholdAgendaApp extends StatelessWidget {
     return MaterialApp(
       title: 'نظام أجندة المهام المنزلية',
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system, // التبديل التلقائي بين الوضع الفاتح والداكن حسب نظام الجهاز
+      
+      // إعدادات الترجمة واللغات الداعمة
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ar', ''), // اللغة العربية (الافتراضية)
+        Locale('en', ''), // اللغة الإنجليزية
+      ],
+      locale: const Locale('ar', ''),
+      
+      themeMode: ThemeMode.system,
       
       // سمة الوضع الفاتح (Light Theme)
       theme: ThemeData(
@@ -167,17 +183,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
-      // شريط التطبيق العلوي
+      // شريط التطبيق العلوي مع الترجمة الديناميكية
       appBar: AppBar(
-        title: const Text('أجندة المهام اليومية'),
+        title: Text(localizations.dailyAgendaTitle),
         actions: [
-          // زر تحديث البيانات
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _fetchTasksFromApi,
           ),
-          // زر اختيار الوقت
           IconButton(
             icon: const Icon(Icons.access_time),
             onPressed: () => _pickTime(context),
@@ -190,13 +206,13 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Color(0xFF1B365D)),
-              child: Text('قائمة المنزل', style: TextStyle(color: Colors.white, fontSize: 20)),
+            DrawerHeader(
+              decoration: const BoxDecoration(color: Color(0xFF1B365D)),
+              child: Text(localizations.homeList, style: const TextStyle(color: Colors.white, fontSize: 20)),
             ),
             ListTile(
               leading: const Icon(Icons.home),
-              title: const Text('لوحة التحكم'),
+              title: Text(localizations.controlPanel),
               onTap: () => Navigator.pop(context),
             ),
           ],
@@ -205,18 +221,17 @@ class _HomeScreenState extends State<HomeScreen> {
       
       // جسم الشاشة الرئيسي
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator()) // مؤشر تحميل أثناء جلب البيانات
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // زر مقسم للتبديل بين الفئات (يومي / أسبوعي)
                   Center(
                     child: SegmentedButton<String>(
-                      segments: const [
-                        ButtonSegment(value: 'يومي', label: Text('يومي'), icon: Icon(Icons.today)),
-                        ButtonSegment(value: 'أسبوعي', label: Text('أسبوعي'), icon: Icon(Icons.date_range)),
+                      segments: [
+                        ButtonSegment(value: 'يومي', label: Text(localizations.daily), icon: const Icon(Icons.today)),
+                        ButtonSegment(value: 'أسبوعي', label: Text(localizations.weekly), icon: const Icon(Icons.date_range)),
                       ],
                       selected: {_selectedCategory},
                       onSelectionChanged: (Set<String> newSelection) {
@@ -228,15 +243,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 12),
                   
-                  // شريط التقدم الخطي للإنجاز
                   const LinearProgressIndicator(value: 0.65),
                   const Divider(height: 24, thickness: 2),
                   
-                  // صف خيارات التنبيهات
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('تفعيل تذكيرات المهام', style: TextStyle(fontWeight: FontWeight.w500)),
+                      Text(localizations.enableTaskReminders, style: const TextStyle(fontWeight: FontWeight.w500)),
                       Switch(
                         value: _isNotificationEnabled,
                         onChanged: (value) => setState(() => _isNotificationEnabled = value),
@@ -245,7 +258,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // صندوق مزخرف بتدرج شعاعي لمنطقة الأولوية
                   DecoratedBox(
                     decoration: const BoxDecoration(
                       gradient: RadialGradient(
@@ -260,15 +272,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('منطقة الأولوية', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                          // عنصر بتأثير هندسي دائرى ومائل
+                          Text(localizations.priorityArea, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                           Transform(
                             alignment: Alignment.topRight,
                             transform: Matrix4.skewY(0.1)..rotateZ(-math.pi / 24.0),
                             child: Container(
                               padding: const EdgeInsets.all(6.0),
                               color: const Color(0xFFE8581C),
-                              child: const Text('مميز', style: TextStyle(color: Colors.white, fontSize: 12)),
+                              child: Text(localizations.featured, style: const TextStyle(color: Colors.white, fontSize: 12)),
                             ),
                           ),
                         ],
@@ -277,10 +288,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  const Text('قائمة المهام:', style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(localizations.tasksList, style: const TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),
                   
-                  // قائمة المهام المتحركة
                   Expanded(
                     child: AnimatedList(
                       key: _listKey,
@@ -296,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: const Color(0xFF1B365D),
                               ),
                               title: Text(task.title),
-                              subtitle: Text('القسم: ${task.category} | الوقت: ${task.time}'),
+                              subtitle: Text('${localizations.section}: ${task.category} | ${localizations.time}: ${task.time}'),
                               trailing: IconButton(
                                 icon: const Icon(Icons.delete, color: Colors.red),
                                 onPressed: () => _removeTask(index),
@@ -311,23 +321,20 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
       
-      // شريط التنقل السفلي
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'المهام'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'الإعدادات'),
+        items: [
+          BottomNavigationBarItem(icon: const Icon(Icons.list), label: localizations.tasks),
+          BottomNavigationBarItem(icon: const Icon(Icons.settings), label: localizations.settings),
         ],
       ),
       
-      // زر الإجراء العائم لإضافة مهمة جديدة
       floatingActionButton: FloatingActionButton.extended(
         icon: const Icon(Icons.add),
-        label: const Text('إضافة مهمة'),
+        label: Text(localizations.addTask),
         onPressed: () {
           _addTask();
-          // إظهار رسالة تنبيه نجاح الإضافة 
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('تمت إضافة المهمة بنجاح!')),
+            SnackBar(content: Text(localizations.taskAddedSuccessfully)),
           );
         },
       ),
